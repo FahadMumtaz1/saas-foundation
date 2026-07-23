@@ -30,6 +30,19 @@ IS_PRODUCTION = os.environ.get("IS_PRODUCTION", "True") == "True"
 
 DEBUG = not IS_PRODUCTION
 
+
+# SECURITY WARNING: keep the secret key used in production secret!
+if IS_PRODUCTION:
+    SECRET_KEY = os.environ.get("SECRET_KEY")
+else:
+    SECRET_KEY = os.environ.get("SECRET_KEY_DEV_ONLY")
+
+if not SECRET_KEY:
+    raise ValueError(
+        "SECRET_KEY environment variable is not set. Please set it in your .env file or environment."
+    )
+
+
 ALLOWED_HOSTS = [".railway.app"]
 
 if DEBUG:
