@@ -27,6 +27,7 @@ SECRET_KEY = "django-insecure-y2qh53hcui-0$wh1+3^b)k7i*jrgv8#gabo73s0ikfz^4(jveo
 
 # SECURITY WARNING: don't run with debug turned on in production!
 IS_PRODUCTION = os.environ.get("IS_PRODUCTION", "True") == "True"
+
 DEBUG = not IS_PRODUCTION
 
 ALLOWED_HOSTS = [".railway.app"]
