@@ -10,11 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
+import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
@@ -23,7 +26,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-y2qh53hcui-0$wh1+3^b)k7i*jrgv8#gabo73s0ikfz^4(jveo"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+IS_PRODUCTION = os.environ.get("IS_PRODUCTION", "True") == "True"
+DEBUG = not IS_PRODUCTION
 
 ALLOWED_HOSTS = [".railway.app"]
 
