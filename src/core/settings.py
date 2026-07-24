@@ -51,6 +51,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    # my apps
+    "commando",
 ]
 
 MIDDLEWARE = [
@@ -68,7 +70,7 @@ ROOT_URLCONF = "core.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -87,7 +89,7 @@ WSGI_APPLICATION = "core.wsgi.application"
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DB_CONN_MAX_AGE = config("DB_CONN_MAX_AGE", default=30, cast=int)
-DATABASE_URL = config("DATABASE_URL", cast=str)
+DATABASE_URL = config("DATABASE_URL", default=None)
 
 if IS_PRODUCTION:
     import dj_database_url
@@ -143,3 +145,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"
+
+STATICFILES_BASE_DIR = BASE_DIR / "staticfiles"
+STATICFILES_VENDOR_DIR = STATICFILES_BASE_DIR / "vendors"
+
+STATICFILES_BASE_DIR.mkdir(exist_ok=True, parents=True)
+
+# source(s) for python manage.py collectstatic
+STATICFILES_DIRS = [STATICFILES_BASE_DIR]
+
+# output for python manage.py collectstatic
+# local cdn
+STATIC_ROOT = BASE_DIR / "local-cdn"
