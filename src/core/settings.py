@@ -10,32 +10,25 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-import os
 from pathlib import Path
-from dotenv import load_dotenv
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-load_dotenv(os.path.join(BASE_DIR, ".env"))
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-y2qh53hcui-0$wh1+3^b)k7i*jrgv8#gabo73s0ikfz^4(jveo"
-
 # SECURITY WARNING: don't run with debug turned on in production!
-IS_PRODUCTION = os.environ.get("IS_PRODUCTION", "True") == "True"
-
+IS_PRODUCTION = config("IS_PRODUCTION", default=True, cast=bool)
 DEBUG = not IS_PRODUCTION
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
 if IS_PRODUCTION:
-    SECRET_KEY = os.environ.get("SECRET_KEY")
+    SECRET_KEY = config("SECRET_KEY", default=None, cast=str)
 else:
-    SECRET_KEY = os.environ.get("SECRET_KEY_DEV_ONLY")
+    SECRET_KEY = config("SECRET_KEY_DEV_ONLY", default=None, cast=str)
 
 if not SECRET_KEY:
     raise ValueError(
@@ -93,12 +86,26 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+DB_CONN_MAX_AGE = config("DB_CONN_MAX_AGE", default=30, cast=int)
+DATABASE_URL = config("DATABASE_URL", cast=str)
+
+if IS_PRODUCTION:
+    import dj_database_url
+
+    DATABASES = {
+        "default": dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=DB_CONN_MAX_AGE,
+            conn_health_checks=True,
+        )
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
+    }
 
 
 # Password validation
