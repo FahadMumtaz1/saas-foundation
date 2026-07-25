@@ -1,7 +1,9 @@
+import helpers
+
 from typing import Any
 from django.conf import settings
 from django.core.management.base import BaseCommand
-import helpers
+
 
 STATICFILES_VENDOR_DIR = getattr(settings, "STATICFILES_VENDOR_DIR")
 
